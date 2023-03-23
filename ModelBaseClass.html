@@ -1,0 +1,1991 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Class: ModelBaseClass</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Class: ModelBaseClass</h1>
+
+    
+
+
+
+
+<section>
+
+<header>
+    
+        <h2><span class="attribs"><span class="type-signature"></span></span>ModelBaseClass<span class="signature">(data, options)</span><span class="type-signature"> &rarr; {<a href="ModelBaseClass.html">ModelBaseClass</a>}</span></h2>
+        
+    
+</header>
+
+<article>
+    <div class="container-overview">
+    
+        
+
+    
+
+    
+    <h4 class="name" id="ModelBaseClass"><span class="type-signature"></span>new ModelBaseClass<span class="signature">(data, options)</span><span class="type-signature"> &rarr; {<a href="ModelBaseClass.html">ModelBaseClass</a>}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Model class: base class for all persistent objects.
+
+`ModelBaseClass` mixes `Validatable` and `Hookable` classes methods
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>data</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Initial object data</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>options</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">An object to control the instantiation</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="lib_model.js.html">lib/model.js</a>, <a href="lib_model.js.html#line53">line 53</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    an instance of the ModelBaseClass
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type"><a href="ModelBaseClass.html">ModelBaseClass</a></span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+    
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h3 class="subsection-title">Methods</h3>
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="getPropertyType"><span class="type-signature"></span>getPropertyType<span class="signature">(propName)</span><span class="type-signature"> &rarr; {String}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Get model property type.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>propName</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Property name</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="lib_model.js.html">lib/model.js</a>, <a href="lib_model.js.html#line422">line 422</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    Name of property type
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">String</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="reset"><span class="type-signature"></span>reset<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Reset dirty attributes.
+This method does not perform any database operations; it just resets the object to its
+initial state.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="lib_model.js.html">lib/model.js</a>, <a href="lib_model.js.html#line627">line 627</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="toObject"><span class="type-signature"></span>toObject<span class="signature">(onlySchema, removeHidden, removeProtected)</span><span class="type-signature"> &rarr; {Object}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Convert model instance to a plain JSON object.
+Returns a canonical object representation (no getters and setters).
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>onlySchema</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Boolean</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Restrict properties to dataSource only.  Default is false.  If true, the function returns only properties defined in the schema;  Otherwise it returns all enumerable properties.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>removeHidden</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Boolean</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Boolean flag as part of the transformation. If true, then hidden properties should not be brought out.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>removeProtected</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Boolean</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Boolean flag as part of the transformation. If true, then protected properties should not be brought out.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="lib_model.js.html">lib/model.js</a>, <a href="lib_model.js.html#line443">line 443</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    returns Plain JSON object
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Object</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id=".defineProperty"><span class="type-signature">(static) </span>defineProperty<span class="signature">(prop, params)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Define a property on the model.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>prop</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Property name</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>params</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Various property configuration</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="lib_model.js.html">lib/model.js</a>, <a href="lib_model.js.html#line391">line 391</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id=".getMergePolicy"><span class="type-signature">(static) </span>getMergePolicy<span class="signature">(options)</span><span class="type-signature"> &rarr; {Object}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    `getMergePolicy()` provides model merge policies to apply when extending
+a child model from a base model. Such a policy drives the way parent/child model
+properties/settings are merged/mixed-in together.
+
+Below is presented the expected merge behaviour for each option.
+NOTE: This applies to top-level settings properties
+
+
+- Any
+    - `{replace: true}` (default): child replaces the value from parent
+    - assignin `null` on child setting deletes the inherited setting
+
+- Arrays:
+    - `{replace: false}`: unique elements of parent and child cumulate
+    - `{rank: true}` adds the model inheritance rank to array
+      elements of type Object {} as internal property `__rank`
+
+- Object {}:
+    - `{replace: false}`: deep merges parent and child objects
+    - `{patch: true}`: child replaces inner properties from parent
+
+
+The recommended built-in merge policy is as follows. It is returned by getMergePolicy()
+when calling the method with option `{configureModelMerge: true}`.
+
+```
+{
+  description: {replace: true}, // string or array
+  options: {patch: true}, // object
+  hidden: {replace: false}, // array
+  protected: {replace: false}, // array
+  indexes: {patch: true}, // object
+  methods: {patch: true}, // object
+  mixins: {patch: true}, // object
+  relations: {patch: true}, // object
+  scope: {replace: true}, // object
+  scopes: {patch: true}, // object
+  acls: {rank: true}, // array
+  // this setting controls which child model property's value allows deleting
+  // a base model's property
+  __delete: null,
+  // this setting controls the default merge behaviour for settings not defined
+  // in the mergePolicy specification
+  __default: {replace: true},
+}
+```
+
+The legacy built-in merge policy is as follows, it is retuned by `getMergePolicy()`
+when avoiding option `configureModelMerge`.
+NOTE: it also provides the ACLs ranking in addition to the legacy behaviour, as well
+as fixes for settings 'description' and 'relations': matching relations from child
+replace relations from parents.
+
+```
+{
+  description: {replace: true}, // string or array
+  properties: {patch: true}, // object
+  hidden: {replace: false}, // array
+  protected: {replace: false}, // array
+  relations: {acls: true}, // object
+  acls: {rank: true}, // array
+}
+```
+
+
+`getMergePolicy()` can be customized using model's setting `configureModelMerge` as follows:
+
+``` json
+{
+// ..
+options: {
+  configureModelMerge: {
+    // merge options
+  }
+}
+// ..
+}
+```
+
+NOTE: mergePolicy parameter can also defined at JSON model definition root
+
+`getMergePolicy()` method can also be extended programmatically as follows:
+
+``` js
+myModel.getMergePolicy = function(options) {
+  const origin = myModel.base.getMergePolicy(options);
+  return Object.assign({}, origin, {
+    // new/overriding options
+  });
+};
+```
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>options</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">option `configureModelMerge` can be used to alter the
+ returned merge policy:
+ - `configureModelMerge: true` will have the method return the recommended merge policy.
+ - `configureModelMerge: {..}` will actually have the method return the provided object.
+ - not providing this options will have the method return a merge policy emulating the
+ the model merge behaviour up to datasource-juggler v3.6.1, as well as the ACLs ranking.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="lib_model.js.html">lib/model.js</a>, <a href="lib_model.js.html#line806">line 806</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    mergePolicy The model merge policy to apply when using the
+ current model as base class for a child model
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Object</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id=".getPropertyType"><span class="type-signature">(static) </span>getPropertyType<span class="signature">(propName)</span><span class="type-signature"> &rarr; {String}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Get model property type.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>propName</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Property name</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="lib_model.js.html">lib/model.js</a>, <a href="lib_model.js.html#line404">line 404</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    Name of property type
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">String</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id=".getUpdateOnlyProperties"><span class="type-signature">(static) </span>getUpdateOnlyProperties<span class="signature">()</span><span class="type-signature"> &rarr; {updateOnlyProps}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Gets properties defined with 'updateOnly' flag set to true from the model. This flag is also set to true
+internally for the id property, if this property is generated and IdInjection is true.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="lib_model.js.html">lib/model.js</a>, <a href="lib_model.js.html#line862">line 862</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    List of properties with updateOnly set to true.
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">updateOnlyProps</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id=".isHiddenProperty"><span class="type-signature">(static) </span>isHiddenProperty<span class="signature">(propertyName)</span><span class="type-signature"> &rarr; {Boolean}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Checks if property is hidden.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>propertyName</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Property name</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="lib_model.js.html">lib/model.js</a>, <a href="lib_model.js.html#line605">line 605</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    true or false if hidden or not.
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Boolean</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id=".isProtectedProperty"><span class="type-signature">(static) </span>isProtectedProperty<span class="signature">(propertyName)</span><span class="type-signature"> &rarr; {Boolean}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Checks if property is protected.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>propertyName</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Property name</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="lib_model.js.html">lib/model.js</a>, <a href="lib_model.js.html#line593">line 593</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    true or false if protected or not.
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Boolean</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id=".mixin"><span class="type-signature">(static) </span>mixin<span class="signature">(anotherClass, options)</span><span class="type-signature"> &rarr; {ModelClass}</span></h4>
+    
+
+    
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>anotherClass</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">could be string or class. Name of the class or the class itself</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>options</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">An object to control the instantiation</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="lib_model.js.html">lib/model.js</a>, <a href="lib_model.js.html#line674">line 674</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">ModelClass</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id=".toString"><span class="type-signature">(static) </span>toString<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Return string representation of class
+This overrides the default `toString()` method
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="lib_model.js.html">lib/model.js</a>, <a href="lib_model.js.html#line430">line 430</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+    
+
+    
+
+    
+</article>
+
+</section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="BelongsTo.html">BelongsTo</a></li><li><a href="DataAccessObject.html">DataAccessObject</a></li><li><a href="DataSource.html">DataSource</a></li><li><a href="DateString.html">DateString</a></li><li><a href="EmbedsMany.html">EmbedsMany</a></li><li><a href="EmbedsOne.html">EmbedsOne</a></li><li><a href="GeoPoint.html">GeoPoint</a></li><li><a href="HasAndBelongsToMany.html">HasAndBelongsToMany</a></li><li><a href="HasMany.html">HasMany</a></li><li><a href="HasManyThrough.html">HasManyThrough</a></li><li><a href="HasOne.html">HasOne</a></li><li><a href="Inclusion.html">Inclusion</a></li><li><a href="KVMap.html">KVMap</a></li><li><a href="ModelBaseClass.html">ModelBaseClass</a></li><li><a href="ModelBuilder.html">ModelBuilder</a></li><li><a href="ModelDefinition.html">ModelDefinition</a></li><li><a href="ObserverMixin.html">ObserverMixin</a></li><li><a href="Phone.html">Phone</a></li><li><a href="ReferencesMany.html">ReferencesMany</a></li><li><a href="Relation.html">Relation</a></li><li><a href="RelationDefinition.html">RelationDefinition</a></li><li><a href="RelationMixin.html">RelationMixin</a></li><li><a href="TransactionMixin.html">TransactionMixin</a></li><li><a href="Validatable.html">Validatable</a></li></ul><h3>Global</h3><ul><li><a href="global.html#BUILDER_PARENT_SETTING">BUILDER_PARENT_SETTING</a></li><li><a href="global.html#DEG2RAD">DEG2RAD</a></li><li><a href="global.html#ModelUtils">ModelUtils</a></li><li><a href="global.html#PARENT_PROPERTY_NAME">PARENT_PROPERTY_NAME</a></li><li><a href="global.html#PhoneCtor">PhoneCtor</a></li><li><a href="global.html#applyParentProperty">applyParentProperty</a></li><li><a href="global.html#applyStrictCheck">applyStrictCheck</a></li><li><a href="global.html#asObjectMap">asObjectMap</a></li><li><a href="global.html#buildOneToOneIdentityMapWithOrigKeys">buildOneToOneIdentityMapWithOrigKeys</a></li><li><a href="global.html#collectTargetIds">collectTargetIds</a></li><li><a href="global.html#convertToArray">convertToArray</a></li><li><a href="global.html#createTestSetupForParentRef">createTestSetupForParentRef</a></li><li><a href="global.html#deepMerge">deepMerge</a></li><li><a href="global.html#deepMergeProperty">deepMergeProperty</a></li><li><a href="global.html#defineCachedRelations">defineCachedRelations</a></li><li><a href="global.html#defineReadonlyProp">defineReadonlyProp</a></li><li><a href="global.html#defineScope">defineScope</a></li><li><a href="global.html#escapeRegExp">escapeRegExp</a></li><li><a href="global.html#execTasksWithInterLeave">execTasksWithInterLeave</a></li><li><a href="global.html#fieldsToArray">fieldsToArray</a></li><li><a href="global.html#fromDBName">fromDBName</a></li><li><a href="global.html#get">get</a></li><li><a href="global.html#hiddenProperty">hiddenProperty</a></li><li><a href="global.html#idName">idName</a></li><li><a href="global.html#idsHaveDuplicates">idsHaveDuplicates</a></li><li><a href="global.html#inherits">inherits</a></li><li><a href="global.html#initialize">initialize</a></li><li><a href="global.html#isNestedModel">isNestedModel</a></li><li><a href="global.html#isPlainObject">isPlainObject</a></li><li><a href="global.html#isRegExpOperator">isRegExpOperator</a></li><li><a href="global.html#join">join</a></li><li><a href="global.html#loadSchemasSync">loadSchemasSync</a></li><li><a href="global.html#mergeIncludes">mergeIncludes</a></li><li><a href="global.html#mixin">mixin</a></li><li><a href="global.html#parseSettings">parseSettings</a></li><li><a href="global.html#rankArrayElements">rankArrayElements</a></li><li><a href="global.html#sanitizeQuery">sanitizeQuery</a></li><li><a href="global.html#toRegExp">toRegExp</a></li><li><a href="global.html#uniq">uniq</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Thu Mar 23 2023 12:03:46 GMT+0530 (India Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

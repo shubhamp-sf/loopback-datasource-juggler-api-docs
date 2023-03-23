@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: lib/connectors/transient.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: lib/connectors/transient.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>// Copyright IBM Corp. 2014,2019. All Rights Reserved.
+// Node module: loopback-datasource-juggler
+// This file is licensed under the MIT License.
+// License text available at https://opensource.org/licenses/MIT
+
+'use strict';
+
+const g = require('strong-globalize')();
+const util = require('util');
+const Connector = require('loopback-connector').Connector;
+const utils = require('../utils');
+const crypto = require('crypto');
+
+/**
+ * Initialize the Transient connector against the given data source
+ *
+ * @param {DataSource} dataSource The loopback-datasource-juggler dataSource
+ * @param {Function} [callback] The callback function
+ */
+exports.initialize = function initializeDataSource(dataSource, callback) {
+  dataSource.connector = new Transient(null, dataSource.settings);
+  dataSource.connector.connect(callback);
+};
+
+exports.Transient = Transient;
+
+function Transient(m, settings) {
+  settings = settings || {};
+  if (typeof settings.generateId === 'function') {
+    this.generateId = settings.generateId.bind(this);
+  }
+  this.defaultIdType = settings.defaultIdType || String;
+  if (m instanceof Transient) {
+    this.isTransaction = true;
+    this.constructor.super_.call(this, 'transient', settings);
+    this._models = m._models;
+  } else {
+    this.isTransaction = false;
+    this.constructor.super_.call(this, 'transient', settings);
+  }
+}
+
+util.inherits(Transient, Connector);
+
+Transient.prototype.getDefaultIdType = function() {
+  return this.defaultIdType;
+};
+
+Transient.prototype.getTypes = function() {
+  return ['db', 'nosql', 'transient'];
+};
+
+Transient.prototype.connect = function(callback) {
+  if (this.isTransaction) {
+    this.onTransactionExec = callback;
+  } else {
+    process.nextTick(callback);
+  }
+};
+
+Transient.prototype.generateId = function(model, data, idName) {
+  let idType;
+  const props = this._models[model].properties;
+  if (idName) idType = props[idName] &amp;&amp; props[idName].type;
+  idType = idType || this.getDefaultIdType();
+  if (idType === Number) {
+    return Math.floor(Math.random() * 10000); // max. 4 digits
+  } else {
+    return crypto.randomBytes(Math.ceil(24 / 2))
+      .toString('hex') // convert to hexadecimal format
+      .slice(0, 24); // return required number of characters
+  }
+};
+
+Transient.prototype.exists = function exists(model, id, callback) {
+  process.nextTick(function() { callback(null, false); }.bind(this));
+};
+
+Transient.prototype.find = function find(model, id, callback) {
+  process.nextTick(function() { callback(null, null); }.bind(this));
+};
+
+Transient.prototype.all = function all(model, filter, callback) {
+  process.nextTick(function() { callback(null, []); });
+};
+
+Transient.prototype.count = function count(model, callback, where) {
+  process.nextTick(function() { callback(null, 0); });
+};
+
+Transient.prototype.create = function create(model, data, callback) {
+  const props = this._models[model].properties;
+  const idName = this.idName(model);
+  let id = undefined;
+  if (idName &amp;&amp; props[idName]) {
+    id = this.getIdValue(model, data) || this.generateId(model, data, idName);
+    id = (props[idName] &amp;&amp; props[idName].type &amp;&amp; props[idName].type(id)) || id;
+    this.setIdValue(model, data, id);
+  }
+  this.flush('create', id, callback);
+};
+
+Transient.prototype.save = function save(model, data, callback) {
+  this.flush('save', data, callback);
+};
+
+Transient.prototype.update =
+  Transient.prototype.updateAll = function updateAll(model, where, data, cb) {
+    const count = 0;
+    this.flush('update', {count: count}, cb);
+  };
+
+Transient.prototype.updateAttributes = function updateAttributes(model, id, data, cb) {
+  if (!id) {
+    const err = new Error(g.f('You must provide an {{id}} when updating attributes!'));
+    if (cb) {
+      return cb(err);
+    } else {
+      throw err;
+    }
+  }
+
+  this.setIdValue(model, data, id);
+  this.save(model, data, cb);
+};
+
+Transient.prototype.destroy = function destroy(model, id, callback) {
+  this.flush('destroy', null, callback);
+};
+
+Transient.prototype.destroyAll = function destroyAll(model, where, callback) {
+  if (!callback &amp;&amp; 'function' === typeof where) {
+    callback = where;
+    where = undefined;
+  }
+  this.flush('destroyAll', null, callback);
+};
+
+/*!
+ * Flush the cache - noop.
+ * @param {Function} callback
+ */
+Transient.prototype.flush = function(action, result, callback) {
+  process.nextTick(function() { callback &amp;&amp; callback(null, result); });
+};
+
+Transient.prototype.transaction = function() {
+  return new Transient(this);
+};
+
+Transient.prototype.exec = function(callback) {
+  this.onTransactionExec();
+  setTimeout(callback, 50);
+};
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="BelongsTo.html">BelongsTo</a></li><li><a href="DataAccessObject.html">DataAccessObject</a></li><li><a href="DataSource.html">DataSource</a></li><li><a href="DateString.html">DateString</a></li><li><a href="EmbedsMany.html">EmbedsMany</a></li><li><a href="EmbedsOne.html">EmbedsOne</a></li><li><a href="GeoPoint.html">GeoPoint</a></li><li><a href="HasAndBelongsToMany.html">HasAndBelongsToMany</a></li><li><a href="HasMany.html">HasMany</a></li><li><a href="HasManyThrough.html">HasManyThrough</a></li><li><a href="HasOne.html">HasOne</a></li><li><a href="Inclusion.html">Inclusion</a></li><li><a href="KVMap.html">KVMap</a></li><li><a href="ModelBaseClass.html">ModelBaseClass</a></li><li><a href="ModelBuilder.html">ModelBuilder</a></li><li><a href="ModelDefinition.html">ModelDefinition</a></li><li><a href="ObserverMixin.html">ObserverMixin</a></li><li><a href="Phone.html">Phone</a></li><li><a href="ReferencesMany.html">ReferencesMany</a></li><li><a href="Relation.html">Relation</a></li><li><a href="RelationDefinition.html">RelationDefinition</a></li><li><a href="RelationMixin.html">RelationMixin</a></li><li><a href="TransactionMixin.html">TransactionMixin</a></li><li><a href="Validatable.html">Validatable</a></li></ul><h3>Global</h3><ul><li><a href="global.html#BUILDER_PARENT_SETTING">BUILDER_PARENT_SETTING</a></li><li><a href="global.html#DEG2RAD">DEG2RAD</a></li><li><a href="global.html#ModelUtils">ModelUtils</a></li><li><a href="global.html#PARENT_PROPERTY_NAME">PARENT_PROPERTY_NAME</a></li><li><a href="global.html#PhoneCtor">PhoneCtor</a></li><li><a href="global.html#applyParentProperty">applyParentProperty</a></li><li><a href="global.html#applyStrictCheck">applyStrictCheck</a></li><li><a href="global.html#asObjectMap">asObjectMap</a></li><li><a href="global.html#buildOneToOneIdentityMapWithOrigKeys">buildOneToOneIdentityMapWithOrigKeys</a></li><li><a href="global.html#collectTargetIds">collectTargetIds</a></li><li><a href="global.html#convertToArray">convertToArray</a></li><li><a href="global.html#createTestSetupForParentRef">createTestSetupForParentRef</a></li><li><a href="global.html#deepMerge">deepMerge</a></li><li><a href="global.html#deepMergeProperty">deepMergeProperty</a></li><li><a href="global.html#defineCachedRelations">defineCachedRelations</a></li><li><a href="global.html#defineReadonlyProp">defineReadonlyProp</a></li><li><a href="global.html#defineScope">defineScope</a></li><li><a href="global.html#escapeRegExp">escapeRegExp</a></li><li><a href="global.html#execTasksWithInterLeave">execTasksWithInterLeave</a></li><li><a href="global.html#fieldsToArray">fieldsToArray</a></li><li><a href="global.html#fromDBName">fromDBName</a></li><li><a href="global.html#get">get</a></li><li><a href="global.html#hiddenProperty">hiddenProperty</a></li><li><a href="global.html#idName">idName</a></li><li><a href="global.html#idsHaveDuplicates">idsHaveDuplicates</a></li><li><a href="global.html#inherits">inherits</a></li><li><a href="global.html#initialize">initialize</a></li><li><a href="global.html#isNestedModel">isNestedModel</a></li><li><a href="global.html#isPlainObject">isPlainObject</a></li><li><a href="global.html#isRegExpOperator">isRegExpOperator</a></li><li><a href="global.html#join">join</a></li><li><a href="global.html#loadSchemasSync">loadSchemasSync</a></li><li><a href="global.html#mergeIncludes">mergeIncludes</a></li><li><a href="global.html#mixin">mixin</a></li><li><a href="global.html#parseSettings">parseSettings</a></li><li><a href="global.html#rankArrayElements">rankArrayElements</a></li><li><a href="global.html#sanitizeQuery">sanitizeQuery</a></li><li><a href="global.html#toRegExp">toRegExp</a></li><li><a href="global.html#uniq">uniq</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Thu Mar 23 2023 12:03:46 GMT+0530 (India Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

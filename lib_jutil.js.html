@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: lib/jutil.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: lib/jutil.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>// Copyright IBM Corp. 2011,2019. All Rights Reserved.
+// Node module: loopback-datasource-juggler
+// This file is licensed under the MIT License.
+// License text available at https://opensource.org/licenses/MIT
+
+'use strict';
+
+const util = require('util');
+
+/**
+ *
+ * @param newClass
+ * @param baseClass
+ */
+exports.inherits = function(newClass, baseClass, options) {
+  util.inherits(newClass, baseClass);
+
+  options = options || {
+    staticProperties: true,
+    override: false,
+  };
+
+  if (options.staticProperties) {
+    Object.keys(baseClass).forEach(function(classProp) {
+      if (classProp !== 'super_' &amp;&amp; (!newClass.hasOwnProperty(classProp) ||
+          options.override)) {
+        const pd = Object.getOwnPropertyDescriptor(baseClass, classProp);
+        Object.defineProperty(newClass, classProp, pd);
+      }
+    });
+  }
+};
+
+/**
+ * Mix in the a class into the new class
+ * @param newClass The target class to receive the mixin
+ * @param mixinClass The class to be mixed in
+ * @param options
+ */
+exports.mixin = function(newClass, mixinClass, options) {
+  if (Array.isArray(newClass._mixins)) {
+    if (newClass._mixins.indexOf(mixinClass) !== -1) {
+      return;
+    }
+    newClass._mixins.push(mixinClass);
+  } else {
+    newClass._mixins = [mixinClass];
+  }
+
+  options = options || {
+    staticProperties: true,
+    instanceProperties: true,
+    override: false,
+    proxyFunctions: false,
+  };
+
+  if (options.staticProperties === undefined) {
+    options.staticProperties = true;
+  }
+
+  if (options.instanceProperties === undefined) {
+    options.instanceProperties = true;
+  }
+
+  if (options.staticProperties) {
+    mixInto(mixinClass, newClass, options);
+  }
+
+  if (options.instanceProperties &amp;&amp; mixinClass.prototype) {
+    mixInto(mixinClass.prototype, newClass.prototype, options);
+  }
+
+  return newClass;
+};
+
+function mixInto(sourceScope, targetScope, options) {
+  Object.keys(sourceScope).forEach(function(propertyName) {
+    const targetPropertyExists = targetScope.hasOwnProperty(propertyName);
+    const sourceProperty = Object.getOwnPropertyDescriptor(sourceScope, propertyName);
+    const targetProperty = targetPropertyExists &amp;&amp; Object.getOwnPropertyDescriptor(targetScope, propertyName);
+    const sourceIsFunc = typeof sourceProperty.value === 'function';
+    const isFunc = targetPropertyExists &amp;&amp; typeof targetProperty.value === 'function';
+    const isDelegate = isFunc &amp;&amp; targetProperty.value._delegate;
+    const shouldOverride = options.override || !targetPropertyExists || isDelegate;
+
+    if (propertyName == '_mixins') {
+      mergeMixins(sourceScope._mixins, targetScope._mixins);
+      return;
+    }
+
+    if (shouldOverride) {
+      Object.defineProperty(targetScope, propertyName, sourceProperty);
+    }
+  });
+}
+
+function mergeMixins(source, target) {
+  // hand-written equivalent of lodash.union()
+  for (const ix in source) {
+    const mx = source[ix];
+    if (target.indexOf(mx) === -1)
+      target.push(mx);
+  }
+}
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="BelongsTo.html">BelongsTo</a></li><li><a href="DataAccessObject.html">DataAccessObject</a></li><li><a href="DataSource.html">DataSource</a></li><li><a href="DateString.html">DateString</a></li><li><a href="EmbedsMany.html">EmbedsMany</a></li><li><a href="EmbedsOne.html">EmbedsOne</a></li><li><a href="GeoPoint.html">GeoPoint</a></li><li><a href="HasAndBelongsToMany.html">HasAndBelongsToMany</a></li><li><a href="HasMany.html">HasMany</a></li><li><a href="HasManyThrough.html">HasManyThrough</a></li><li><a href="HasOne.html">HasOne</a></li><li><a href="Inclusion.html">Inclusion</a></li><li><a href="KVMap.html">KVMap</a></li><li><a href="ModelBaseClass.html">ModelBaseClass</a></li><li><a href="ModelBuilder.html">ModelBuilder</a></li><li><a href="ModelDefinition.html">ModelDefinition</a></li><li><a href="ObserverMixin.html">ObserverMixin</a></li><li><a href="Phone.html">Phone</a></li><li><a href="ReferencesMany.html">ReferencesMany</a></li><li><a href="Relation.html">Relation</a></li><li><a href="RelationDefinition.html">RelationDefinition</a></li><li><a href="RelationMixin.html">RelationMixin</a></li><li><a href="TransactionMixin.html">TransactionMixin</a></li><li><a href="Validatable.html">Validatable</a></li></ul><h3>Global</h3><ul><li><a href="global.html#BUILDER_PARENT_SETTING">BUILDER_PARENT_SETTING</a></li><li><a href="global.html#DEG2RAD">DEG2RAD</a></li><li><a href="global.html#ModelUtils">ModelUtils</a></li><li><a href="global.html#PARENT_PROPERTY_NAME">PARENT_PROPERTY_NAME</a></li><li><a href="global.html#PhoneCtor">PhoneCtor</a></li><li><a href="global.html#applyParentProperty">applyParentProperty</a></li><li><a href="global.html#applyStrictCheck">applyStrictCheck</a></li><li><a href="global.html#asObjectMap">asObjectMap</a></li><li><a href="global.html#buildOneToOneIdentityMapWithOrigKeys">buildOneToOneIdentityMapWithOrigKeys</a></li><li><a href="global.html#collectTargetIds">collectTargetIds</a></li><li><a href="global.html#convertToArray">convertToArray</a></li><li><a href="global.html#createTestSetupForParentRef">createTestSetupForParentRef</a></li><li><a href="global.html#deepMerge">deepMerge</a></li><li><a href="global.html#deepMergeProperty">deepMergeProperty</a></li><li><a href="global.html#defineCachedRelations">defineCachedRelations</a></li><li><a href="global.html#defineReadonlyProp">defineReadonlyProp</a></li><li><a href="global.html#defineScope">defineScope</a></li><li><a href="global.html#escapeRegExp">escapeRegExp</a></li><li><a href="global.html#execTasksWithInterLeave">execTasksWithInterLeave</a></li><li><a href="global.html#fieldsToArray">fieldsToArray</a></li><li><a href="global.html#fromDBName">fromDBName</a></li><li><a href="global.html#get">get</a></li><li><a href="global.html#hiddenProperty">hiddenProperty</a></li><li><a href="global.html#idName">idName</a></li><li><a href="global.html#idsHaveDuplicates">idsHaveDuplicates</a></li><li><a href="global.html#inherits">inherits</a></li><li><a href="global.html#initialize">initialize</a></li><li><a href="global.html#isNestedModel">isNestedModel</a></li><li><a href="global.html#isPlainObject">isPlainObject</a></li><li><a href="global.html#isRegExpOperator">isRegExpOperator</a></li><li><a href="global.html#join">join</a></li><li><a href="global.html#loadSchemasSync">loadSchemasSync</a></li><li><a href="global.html#mergeIncludes">mergeIncludes</a></li><li><a href="global.html#mixin">mixin</a></li><li><a href="global.html#parseSettings">parseSettings</a></li><li><a href="global.html#rankArrayElements">rankArrayElements</a></li><li><a href="global.html#sanitizeQuery">sanitizeQuery</a></li><li><a href="global.html#toRegExp">toRegExp</a></li><li><a href="global.html#uniq">uniq</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Thu Mar 23 2023 12:03:46 GMT+0530 (India Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

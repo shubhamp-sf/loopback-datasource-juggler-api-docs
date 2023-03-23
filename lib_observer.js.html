@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: lib/observer.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: lib/observer.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>// Copyright IBM Corp. 2015,2019. All Rights Reserved.
+// Node module: loopback-datasource-juggler
+// This file is licensed under the MIT License.
+// License text available at https://opensource.org/licenses/MIT
+
+'use strict';
+
+const async = require('async');
+const utils = require('./utils');
+const debug = require('debug')('loopback:observer');
+
+module.exports = ObserverMixin;
+
+/**
+ * ObserverMixin class. Use to add observe/notifyObserversOf APIs to other
+ * classes.
+ *
+ * @class ObserverMixin
+ */
+function ObserverMixin() {
+}
+
+/**
+ * Register an asynchronous observer for the given operation (event).
+ *
+ * Example:
+ *
+ * Registers a `before save` observer for a given model.
+ *
+ * ```javascript
+ * MyModel.observe('before save', function filterProperties(ctx, next) {
+  if (ctx.options &amp;&amp; ctx.options.skipPropertyFilter) return next();
+  if (ctx.instance) {
+    FILTERED_PROPERTIES.forEach(function(p) {
+      ctx.instance.unsetAttribute(p);
+    });
+  } else {
+    FILTERED_PROPERTIES.forEach(function(p) {
+      delete ctx.data[p];
+    });
+  }
+  next();
+});
+ * ```
+ *
+ * @param {String} operation The operation name.
+ * @callback {function} listener The listener function. It will be invoked with
+ * `this` set to the model constructor, e.g. `User`.
+ * @end
+ */
+ObserverMixin.observe = function(operation, listener) {
+  this._observers = this._observers || {};
+  if (!this._observers[operation]) {
+    this._observers[operation] = [];
+  }
+
+  this._observers[operation].push(listener);
+};
+
+/**
+ * Unregister an asynchronous observer for the given operation (event).
+ *
+ * Example:
+ *
+ * ```javascript
+ * MyModel.removeObserver('before save', function removedObserver(ctx, next) {
+    // some logic user want to apply to the removed observer...
+    next();
+ });
+ * ```
+ *
+ * @param {String} operation The operation name.
+ * @callback {function} listener The listener function.
+ * @end
+ */
+ObserverMixin.removeObserver = function(operation, listener) {
+  if (!(this._observers &amp;&amp; this._observers[operation])) return;
+
+  const index = this._observers[operation].indexOf(listener);
+  if (index !== -1) {
+    return this._observers[operation].splice(index, 1);
+  }
+};
+
+/**
+ * Unregister all asynchronous observers for the given operation (event).
+ *
+ * Example:
+ *
+ * Remove all observers connected to the `before save` operation.
+ *
+ * ```javascript
+ * MyModel.clearObservers('before save');
+ * ```
+ *
+ * @param {String} operation The operation name.
+ * @end
+ */
+ObserverMixin.clearObservers = function(operation) {
+  if (!(this._observers &amp;&amp; this._observers[operation])) return;
+
+  this._observers[operation].length = 0;
+};
+
+/**
+ * Invoke all async observers for the given operation(s).
+ *
+ * Example:
+ *
+ * Notify all async observers for the `before save` operation.
+ *
+ * ```javascript
+ * var context = {
+    Model: Model,
+    instance: obj,
+    isNewInstance: true,
+    hookState: hookState,
+    options: options,
+ };
+ * Model.notifyObserversOf('before save', context, function(err) {
+    if (err) return cb(err);
+    // user can specify the logic after the observers have been notified
+ });
+ * ```
+ *
+ * @param {String|String[]} operation The operation name(s).
+ * @param {Object} context Operation-specific context.
+ * @callback {function(Error=)} callback The callback to call when all observers
+ *   have finished.
+ */
+ObserverMixin.notifyObserversOf = function(operation, context, callback) {
+  const self = this;
+  if (!callback) callback = utils.createPromiseCallback();
+
+  function createNotifier(op) {
+    return function(ctx, done) {
+      if (typeof ctx === 'function' &amp;&amp; done === undefined) {
+        done = ctx;
+        ctx = context;
+      }
+      self.notifyObserversOf(op, context, done);
+    };
+  }
+
+  if (Array.isArray(operation)) {
+    const tasks = [];
+    for (let i = 0, n = operation.length; i &lt; n; i++) {
+      tasks.push(createNotifier(operation[i]));
+    }
+    return async.waterfall(tasks, callback);
+  }
+
+  const observers = this._observers &amp;&amp; this._observers[operation];
+
+  this._notifyBaseObservers(operation, context, function doNotify(err) {
+    if (err) return callback(err, context);
+    if (!observers || !observers.length) return callback(null, context);
+
+    async.eachSeries(
+      observers,
+      function notifySingleObserver(fn, next) {
+        const retval = fn(context, next);
+        if (retval &amp;&amp; typeof retval.then === 'function') {
+          retval.then(
+            function() { next(); return null; },
+            next, // error handler
+          );
+        }
+      },
+      function(err) { callback(err, context); },
+    );
+  });
+  return callback.promise;
+};
+
+ObserverMixin._notifyBaseObservers = function(operation, context, callback) {
+  if (this.base &amp;&amp; this.base.notifyObserversOf)
+    this.base.notifyObserversOf(operation, context, callback);
+  else
+    callback();
+};
+
+/**
+ * Run the given function with before/after observers.
+ *
+ * It's done in three serial asynchronous steps:
+ *
+ * - Notify the registered observers under 'before ' + operation
+ * - Execute the function
+ * - Notify the registered observers under 'after ' + operation
+ *
+ * If an error happens, it fails first and calls the callback with err.
+ *
+ * Example:
+ *
+ * ```javascript
+ * var context = {
+    Model: Model,
+    instance: obj,
+    isNewInstance: true,
+    hookState: hookState,
+    options: options,
+ };
+ * function work(done) {
+   process.nextTick(function() {
+      done(null, 1);
+    });
+  }
+ * Model.notifyObserversAround('execute', context, work, function(err) {
+    if (err) return cb(err);
+    // user can specify the logic after the observers have been notified
+ });
+ * ```
+ *
+ * @param {String} operation The operation name
+ * @param {Context} context The context object
+ * @param {Function} fn The task to be invoked as fn(done) or fn(context, done)
+ * @callback {Function} callback The callback function
+ * @returns {*}
+ */
+ObserverMixin.notifyObserversAround = function(operation, context, fn, callback) {
+  const self = this;
+  context = context || {};
+  // Add callback to the context object so that an observer can skip other
+  // ones by calling the callback function directly and not calling next
+  if (context.end === undefined) {
+    context.end = callback;
+  }
+  // First notify before observers
+  return self.notifyObserversOf('before ' + operation, context,
+    function(err, context) {
+      if (err) return callback(err);
+
+      function cbForWork(err) {
+        const args = [].slice.call(arguments, 0);
+        if (err) {
+          // call observer in case of error to hook response
+          context.error = err;
+          self.notifyObserversOf('after ' + operation + ' error', context,
+            function(_err, context) {
+              if (_err &amp;&amp; err) {
+                debug(
+                  'Operation %j failed and "after %s error" hook returned an error too. ' +
+                    'Calling back with the hook error only.' +
+                    '\nOriginal error: %s\nHook error: %s\n',
+                  err.stack || err,
+                  _err.stack || _err,
+                );
+              }
+              callback.call(null, _err || err, context);
+            });
+          return;
+        }
+        // Find the list of params from the callback in addition to err
+        const returnedArgs = args.slice(1);
+        // Set up the array of results
+        context.results = returnedArgs;
+        // Notify after observers
+        self.notifyObserversOf('after ' + operation, context,
+          function(err, context) {
+            if (err) return callback(err, context);
+            let results = returnedArgs;
+            if (context &amp;&amp; Array.isArray(context.results)) {
+              // Pickup the results from context
+              results = context.results;
+            }
+            // Build the list of params for final callback
+            const args = [err].concat(results);
+            callback.apply(null, args);
+          });
+      }
+
+      if (fn.length === 1) {
+        // fn(done)
+        fn(cbForWork);
+      } else {
+        // fn(context, done)
+        fn(context, cbForWork);
+      }
+    });
+};
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="BelongsTo.html">BelongsTo</a></li><li><a href="DataAccessObject.html">DataAccessObject</a></li><li><a href="DataSource.html">DataSource</a></li><li><a href="DateString.html">DateString</a></li><li><a href="EmbedsMany.html">EmbedsMany</a></li><li><a href="EmbedsOne.html">EmbedsOne</a></li><li><a href="GeoPoint.html">GeoPoint</a></li><li><a href="HasAndBelongsToMany.html">HasAndBelongsToMany</a></li><li><a href="HasMany.html">HasMany</a></li><li><a href="HasManyThrough.html">HasManyThrough</a></li><li><a href="HasOne.html">HasOne</a></li><li><a href="Inclusion.html">Inclusion</a></li><li><a href="KVMap.html">KVMap</a></li><li><a href="ModelBaseClass.html">ModelBaseClass</a></li><li><a href="ModelBuilder.html">ModelBuilder</a></li><li><a href="ModelDefinition.html">ModelDefinition</a></li><li><a href="ObserverMixin.html">ObserverMixin</a></li><li><a href="Phone.html">Phone</a></li><li><a href="ReferencesMany.html">ReferencesMany</a></li><li><a href="Relation.html">Relation</a></li><li><a href="RelationDefinition.html">RelationDefinition</a></li><li><a href="RelationMixin.html">RelationMixin</a></li><li><a href="TransactionMixin.html">TransactionMixin</a></li><li><a href="Validatable.html">Validatable</a></li></ul><h3>Global</h3><ul><li><a href="global.html#BUILDER_PARENT_SETTING">BUILDER_PARENT_SETTING</a></li><li><a href="global.html#DEG2RAD">DEG2RAD</a></li><li><a href="global.html#ModelUtils">ModelUtils</a></li><li><a href="global.html#PARENT_PROPERTY_NAME">PARENT_PROPERTY_NAME</a></li><li><a href="global.html#PhoneCtor">PhoneCtor</a></li><li><a href="global.html#applyParentProperty">applyParentProperty</a></li><li><a href="global.html#applyStrictCheck">applyStrictCheck</a></li><li><a href="global.html#asObjectMap">asObjectMap</a></li><li><a href="global.html#buildOneToOneIdentityMapWithOrigKeys">buildOneToOneIdentityMapWithOrigKeys</a></li><li><a href="global.html#collectTargetIds">collectTargetIds</a></li><li><a href="global.html#convertToArray">convertToArray</a></li><li><a href="global.html#createTestSetupForParentRef">createTestSetupForParentRef</a></li><li><a href="global.html#deepMerge">deepMerge</a></li><li><a href="global.html#deepMergeProperty">deepMergeProperty</a></li><li><a href="global.html#defineCachedRelations">defineCachedRelations</a></li><li><a href="global.html#defineReadonlyProp">defineReadonlyProp</a></li><li><a href="global.html#defineScope">defineScope</a></li><li><a href="global.html#escapeRegExp">escapeRegExp</a></li><li><a href="global.html#execTasksWithInterLeave">execTasksWithInterLeave</a></li><li><a href="global.html#fieldsToArray">fieldsToArray</a></li><li><a href="global.html#fromDBName">fromDBName</a></li><li><a href="global.html#get">get</a></li><li><a href="global.html#hiddenProperty">hiddenProperty</a></li><li><a href="global.html#idName">idName</a></li><li><a href="global.html#idsHaveDuplicates">idsHaveDuplicates</a></li><li><a href="global.html#inherits">inherits</a></li><li><a href="global.html#initialize">initialize</a></li><li><a href="global.html#isNestedModel">isNestedModel</a></li><li><a href="global.html#isPlainObject">isPlainObject</a></li><li><a href="global.html#isRegExpOperator">isRegExpOperator</a></li><li><a href="global.html#join">join</a></li><li><a href="global.html#loadSchemasSync">loadSchemasSync</a></li><li><a href="global.html#mergeIncludes">mergeIncludes</a></li><li><a href="global.html#mixin">mixin</a></li><li><a href="global.html#parseSettings">parseSettings</a></li><li><a href="global.html#rankArrayElements">rankArrayElements</a></li><li><a href="global.html#sanitizeQuery">sanitizeQuery</a></li><li><a href="global.html#toRegExp">toRegExp</a></li><li><a href="global.html#uniq">uniq</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Thu Mar 23 2023 12:03:46 GMT+0530 (India Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
